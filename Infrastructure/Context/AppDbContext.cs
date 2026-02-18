@@ -12,11 +12,26 @@ namespace AtendimentoMedico.Infraestructure.Context
         public DbSet<Patient>? Patients { get; set; }
         public DbSet<MedicalRecord>? MedicalRecords { get; set; }
 
-        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Doctor>().Property(d => d.Active).HasDefaultValue(true);
-            modelBuilder.Entity<Patient>().Property(p => p.Active).HasDefaultValue(true);
-            modelBuilder.Entity<Consultation>().Property(c => c.Status).HasDefaultValue("Agendada");
-        }*/
+            modelBuilder.Entity<Consultation>()
+                .HasOne(c => c.Patient)
+                .WithMany()
+                .HasForeignKey(c => c.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Consultation>()
+                .HasOne(c => c.Doctor)
+                .WithMany()
+                .HasForeignKey(c => c.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Consultation>()
+                .HasOne(c => c.MedicalRecord)
+                .WithOne(m => m.Consultation)
+                .HasForeignKey<MedicalRecord>(m => m.ConsultationId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //lembrar que se apagar consulta, apaga o prontuario
+        }
     }
 }
