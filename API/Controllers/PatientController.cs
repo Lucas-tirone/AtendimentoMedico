@@ -63,11 +63,19 @@ namespace AtendimentoMedico.API.Controllers
                 return NotFound($"Patient with {id} is null");
             if (patient.PatientID != id)
                 return BadRequest("Id mismatch");
+
             var existing = await _patientRepository.GetByIdAsync(id);
+
             if (existing == null)
                 return NotFound();
 
-            var updated = await _patientRepository.UpdateAsync(patient);
+            existing.FullName = patient.FullName;
+            existing.Adress = patient.Adress;
+            existing.Phone  = patient.Phone;
+            existing.Active = patient.Active;
+        
+            var updated = await _patientRepository.UpdateAsync(existing);
+
             return Ok(updated);
         }
 

@@ -1,6 +1,8 @@
-﻿using AtendimentoMedico.Domain.Interfaces;
+﻿using API.DTOs;
+using AtendimentoMedico.Domain.Interfaces;
 using AtendimentoMedico.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using API.DTOs.DTOsMapping;
 
 namespace API.Controllers
 {
@@ -15,17 +17,20 @@ namespace API.Controllers
         }
 
         [HttpGet("GetList")]
-        public async Task<ActionResult<IEnumerable<Consultation>>> GetAllAsync()
+        public async Task<ActionResult<IEnumerable<ConsultationDTO>>> GetAllAsync()
         {
             var getAll = await _consultationRepository.GetAllAsync();
+
             if (!getAll.Any())
                 return NoContent();
 
-            return Ok(getAll);
+            var consultationsToDTO = MappingConsultationDTO.toListConsultationDTO(getAll);
+
+            return Ok(consultationsToDTO);
         }
 
         [HttpGet("GetById/{id:int}", Name = "getConsultByID")]
-        public async Task<ActionResult<Consultation>> GetByIdAsync(int id)
+        public async Task<ActionResult<ConsultationDTO>> GetByIdAsync(int id)
         {
             if (id <= 0)
                 return BadRequest();
@@ -34,17 +39,45 @@ namespace API.Controllers
 
             if (getById is null)
                 return NotFound();
-            return Ok();
+
+            var consultationToDto = MappingConsultationDTO.ConsultationToDTO(getById);
+
+            return Ok(consultationToDto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Consultation>> CreateAsync(Consultation consultation)
+        public async Task<ActionResult<ConsultationDTO>> CreateAsync(ConsultationDTO consultationDTO)
         {
-            if (consultation == null)
+            if (consultationDTO == null)
                 return BadRequest();
 
-            var newConsult = await _consultationRepository.CreateAsync(consultation);
-            return new CreatedAtRouteResult("getConsultByID", new { id = newConsult.ConsultationID }, newConsult);
+            var newConsultation = MappingConsultationDTO.ConsultationDtoToConsultation(consultationDTO);
+
+            var consultation = await _consultationRepository.CreateAsync(newConsultation);
+
+            var newConsultationDTO = MappingConsultationDTO.ConsultationToDTO(consultation);
+
+            return new CreatedAtRouteResult("getConsultByID",  new { id = consultation.ConsultationID},newConsultationDTO);
         }
+
+        [HttpPut("UpdateStatus/{id:int}/status")]
+        public async Task<ActionResult<ConsultationDTO>> UpdateAsync(int id, int status) 
+        {
+            if (id <= 0)
+                return BadRequest("Id bellow than 0");
+
+            var exist = await _consultationRepository.GetByIdAsync(id);
+
+            if (exist == null)
+                return NotFound();
+
+            exist.Status = (Consultation.ConsultationStatus)status;
+
+            var updateConsultation = await _consultationRepository.UpdateAsync(exist);
+
+            return Ok(MappingConsultationDTO.ConsultationToDTO(exist)) ;
+
+        }
+
     }
 }
