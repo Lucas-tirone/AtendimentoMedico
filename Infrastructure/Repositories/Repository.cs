@@ -1,5 +1,5 @@
 ﻿using AtendimentoMedico.Infraestructure.Context;
-using AtendimentoMedico.Domain.Interfaces;
+using AtendimentoMedico.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -23,8 +23,6 @@ namespace AtendimentoMedico.Infraestructure.Repositories
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
-
-
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> expression)
         {

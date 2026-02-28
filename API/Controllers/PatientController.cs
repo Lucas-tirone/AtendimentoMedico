@@ -1,6 +1,6 @@
 ﻿using AtendimentoMedico.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using AtendimentoMedico.Domain.Interfaces;
+using AtendimentoMedico.Application.Interfaces;
 
 
 namespace AtendimentoMedico.API.Controllers
@@ -17,7 +17,7 @@ namespace AtendimentoMedico.API.Controllers
             _patientRepository = repositoryPatient;
         }
 
-        //### SECTION CRUD ####
+        
         [HttpGet("GetList")]
         public async Task<ActionResult<IEnumerable<Patient>>> GetAll()
         {

@@ -1,7 +1,10 @@
 using AtendimentoMedico.Infraestructure.Context;
-using AtendimentoMedico.Domain.Interfaces;
+using AtendimentoMedico.Application.Interfaces;
 using AtendimentoMedico.Infraestructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Application.Interfaces;
+using Application.UseCases;
+using Infrastructure.Repositories;
 
 namespace AtendimentoMedico.API;
 
@@ -24,8 +27,12 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(MySqlConnection, ServerVersion.AutoDetect(MySqlConnection)));
 
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        
+        builder.Services.AddScoped<IDoctorService, DoctorService>();
+        builder.Services.AddScoped<IConsultationRepository, ConsultationRepository>();
 
         var app = builder.Build();
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

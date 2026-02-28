@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace AtendimentoMedico.Domain.Interfaces;
+namespace AtendimentoMedico.Application.Interfaces;
 
 public interface IRepository<T> where T : class
 {

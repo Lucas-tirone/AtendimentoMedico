@@ -1,5 +1,5 @@
 ﻿using API.DTOs;
-using AtendimentoMedico.Domain.Interfaces;
+using AtendimentoMedico.Application.Interfaces;
 using AtendimentoMedico.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.DTOs.DTOsMapping;
@@ -11,6 +11,8 @@ namespace API.Controllers
     public class ConsultationController : ControllerBase
     {
         protected readonly IRepository<Consultation> _consultationRepository;
+        
+
         public ConsultationController(IRepository<Consultation> consultationRepository)
         {
             _consultationRepository = consultationRepository;
