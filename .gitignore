@@ -59,4 +59,5 @@ obj/
 .vs/
 
 #JSON
+settings.json
 appsettings.Development.json
